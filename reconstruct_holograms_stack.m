@@ -33,9 +33,10 @@ if use_gpu
     end
 end
 
-if exist('phase_correction', 'var') && ~isempty(phase_correction)
-    FH = FH .* exp(-1i * phase_correction);
-end
+%FIXME: can I mute it? Why doesn'it it work?
+% if exist('phase_correction', 'var') && ~isempty(phase_correction)
+%     FH = FH .* exp(-1i * phase_correction);
+% end
 
 H = ifft2(FH);
 clear FH;
