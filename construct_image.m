@@ -1,29 +1,8 @@
-function [type_list1, type_list2] = construct_image(FH, wavelength, f1, f2, acquisition, gaussian_width, use_gpu, svd, phase_correction,...
-                                                                  color_f1, color_f2, color_f3, output_type)
-% Compute the moment of a batch of interferograms.
-% This function computes a lot of different outputs, for speed use
-% tue 'reconstruct_hologram' function instead.
-%
-% INPUT ARGUMENT
-% FH: the preprocessed input interferograms batch
-% kernel: wave propagation kernel
-% f1, f2: frequency integration bounds
-% acquisition: a DopplerAcquisition struct containing informations
-%              about the experimental setup
-% gaussian_width: size of the gaussian filter
-% use_gpu: use gpu or not for the reconstruction
-% svd: add SVD filtering to hologram reconstruction
-% phase_correction: optional parameter, a phase correction to apply before
-%                   reconstructing the hologram
-%
-% OUTPUT ARGUMENTS
-% hologram0: M0
-% sqrt_hologram0: sqrt(M0)
-% hologram1: M1
-% hologram2: M2
-% composite_(1|2|3): reduced frequency bands of M0 to create a composite
-%                    RGB image in post processing
-% blood velocity: velocity
+function img_list = construct_image(FH, wavelength, f1, f2, acquisition, gaussian_width, use_gpu, svd, phase_correction,...
+                                                                  color_f1, color_f2, color_f3, img_type_list, is_low_frequency)
+% fullNames = ['Power Doppler', 'Color Doppler', 'Directional Doppler', 'Velocity Estimate'];
+% save the problem of frequencies!
+img_list = zeros(size(FH,1), size(FH,2), 3, size(img_type_list,2)); % 10 corresponds to the possible outputs of reconstruct hologram extras
 
 j_win = size(FH, 3);
 ac = acquisition;
@@ -56,21 +35,45 @@ SH2 = permute(SH2, [2 1 3]);
 SH2 = circshift(SH2, [-ac.delta_y, ac.delta_x, 0]);
 
 %% Compute moments based on dropdown value
-
-switch output_type
-    case 'velocity estimate'
-        type_list1 = construct_velocity_video(SH2, f1, f2, ac.fs, j_win, gaussian_width, wavelength);
-        
-    case 'color Doppler'
-        [type_list1, type_list2] = composite(SH2, color_f1, color_f2, color_f3, ac.fs, j_win, gaussian_width);
-       
-    case 'directional Doppler'
-        [type_list1, type_list2] = directional(SH2, f1, f2, ac.fs, j_win, gaussian_width);  
+if is_low_frequency
+    sign = -1;
+else 
+    sign = 1;
 end
 
-M1sM0r = fmean(SH2, f1, f2, ac.fs, j_win, gaussian_width);
-[hologram0, sqrt_hologram0] = moment0(SH2, f1, f2, ac.fs, j_win, gaussian_width);
-hologram1 = moment1(SH2, f1, f2, ac.fs, j_win, gaussian_width);
-hologram2 = moment2(SH2, f1, f2, ac.fs, j_win, gaussian_width);
+
+if img_type_list.values(1) % Power Doppler has been chosen
+    [img, ~] = (moment0(SH2, f1, f2, ac.fs, j_win, gaussian_width));
+    img_list(:,:,:,1) = cat(3, img, img, img);
+end
+
+if img_type_list.values(2) % Power 1 Doppler has been chosen
+    img = moment1(SH2, f1, f2, ac.fs, j_win, gaussian_width);
+    img_list(:,:,:,2) = cat(3, img, img, img);
+end
+
+if img_type_list.values(3) % Power 2 Doppler has been chosen
+    img = moment2(SH2, f1, f2, ac.fs, j_win, gaussian_width);
+    img_list(:,:,:,3) = cat(3, img, img, img);
+end
+
+if img_type_list.values(4)  % Color Doppler has been chosen
+    [freq_high, freq_low] = composite(SH2, color_f1, color_f2, color_f3, ac.fs, j_win, gaussian_width);
+    img_list(:,:,:,4) = construct_colored_image(sign * gather(freq_high), sign * gather(freq_low), is_low_frequency);
+end
+
+if img_type_list.values(5) % Directional Doppler has been chosen
+    [M0_neg, M0_pos] = directional(SH2, f1, f2, ac.fs, j_win, gaussian_width);
+    img_list(:,:,:,5) = construct_directionalDoppler_image(sign * gather(M0_neg), sign *gather(M0_pos), is_low_frequency);
+end
+
+if img_type_list.values(6) % M1sM0r has been chosen
+    img = fmean(SH2, f1, f2, ac.fs, j_win, gaussian_width);
+    img_list(:,:,:,6) = cat(3, img, img, img);
+end
+
+if img_type_list.values(7) % Velocity Estimate has been chosen
+    img_list(:,:,:,7) = construct_velocity_video(SH2, f1, f2, ac.fs, j_win, gaussian_width, wavelength);
+end
 
 end
