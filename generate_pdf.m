@@ -1,5 +1,7 @@
 function generate_pdf(img_dirname, img_dirpath, fS, f1, f2)
 
+
+%% FIXME THIS IS NOT GENERAL
 img_dirname 
 % 211006_BRZ0182_OS1OS2_1_small_7
 img_dirpath
