@@ -15,12 +15,8 @@ field_5 = 'directional_Doppler'; values_5 = struct('short_name','directional', '
 field_6 = 'M0sM1r'; values_6 = struct('short_name','ratio', 'select', 0 ,'image', [] );
 field_7 = 'velocity_estimate'; values_7 = struct('short_name','velocity', 'select', 0 ,'image', []);
 
-% field_2 = 'power_1_Doppler'; values_2 = {'power1', 0 ,[]};
-% field_3 = 'power_2_Doppler'; values_3 = {'power2', 0 ,[]};
-% field_4 = 'color_Doppler'; values_4 = {'color', 0 ,[]};
-% field_5 = 'directional_Doppler'; values_5 = {'directional', 0 ,[]};
-% field_6 = 'M0sM1r'; values_6 = {'ratio', 0 ,[]};
-% field_7 = 'velocity_estimate'; values_7 = {'velocity', 0 ,[]};
+%it takes a lot of time, would it be possible to unify the structure : have
+%only the image field or only the additional images?
 
 images = struct(field_1, values_1, field_2, values_2, field_3, values_3, field_4, values_4, field_5, values_5, field_6, values_6, field_7, values_7);
 
