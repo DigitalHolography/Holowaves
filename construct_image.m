@@ -70,7 +70,7 @@ if img_type_list.directional_Doppler.select % Directional Doppler has been chose
     [freq_high, freq_low] = directional(SH2, f1, f2, ac.fs, j_win, gaussian_width);
     img_type_list.directional_Doppler.freq_low = freq_low;
     img_type_list.directional_Doppler.freq_high = freq_high;
-    img_type_list.directional_Doppler.image = construct_directionalDoppler_image(sign * gather(freq_high), sign *gather(freq_low), is_low_frequency);
+    img_type_list.directional_Doppler.image = construct_directional_image(sign * gather(freq_high), sign *gather(freq_low), is_low_frequency);
 end
 
 if img_type_list.M0sM1r.select % M1sM0r has been chosen

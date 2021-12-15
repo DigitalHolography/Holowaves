@@ -47,7 +47,7 @@ pmax = size(img_dir_content, 1) - 2;
 % vmax = size(video_dir_content, 1) - 2;
 % allmax = pmax + vmax;
 
-figure(111)
+figure(111);
 for pp = 1:pmax
     imagefilefeatures = img_dir_content(pp + 2);
     [filepath,name,ext] = fileparts(fullfile(imagefilefeatures.folder, imagefilefeatures.name));
@@ -64,22 +64,23 @@ for pp = 1:pmax
     ax.TitleFontSizeMultiplier = 0.595;
 end
 
-% video_dir_path = erase(img_dirpath, img_dirname);
-% 
+videofilefeatures = video_dir_content(3);
+[video_dir_path,name,ext] = fileparts(fullfile(videofilefeatures.folder, videofilefeatures.name));
+
 % v = VideoReader(video_dir_path);
 % 
 % while hasFrame(v)
-%     frame = readFrame(v);
+%     frame = frameread(v,1);
 % end
+% 
+% subplot(3, 5, pp + 1);
 
-subplot(3, 5, pp + 1);
 
-
-f = figure(111);
-f.Units = 'inches';
-f.Position = [1 1 11 8];
-
-figure(111)
+% f = figure(111);
+% f.Units = 'inches';
+% f.Position = [1 1 11 8];
+% 
+% figure(111)
 
 chosen_figure=111;
 set(chosen_figure, 'PaperUnits', 'inches');
