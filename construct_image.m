@@ -1,5 +1,6 @@
 function img_type_list = construct_image(FH, wavelength, f1, f2, acquisition, gaussian_width, use_gpu, svd, phase_correction,...
-                                                                  color_f1, color_f2, color_f3, img_type_list, is_low_frequency)
+                                                                  color_f1, color_f2, color_f3, img_type_list, is_low_frequency , ...
+                                                                  spatial_transformation)
 
 % FIXME : replace ifs by short name functions
 
@@ -18,7 +19,13 @@ if exist('phase_correction', 'var') && ~isempty(phase_correction)
     FH = FH .* exp(-1i * phase_correction);
 end
 
-H = ifft2(FH);
+switch spatial_transformation
+    case 'angular spectrum'
+        H = ifft2(FH);
+    case 'Fresnel'
+        H = fftshift(ifft2(FH));
+end
+
 clear FH;
 
 %% SVD filtering
