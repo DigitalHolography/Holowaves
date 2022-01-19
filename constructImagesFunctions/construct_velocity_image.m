@@ -27,7 +27,7 @@ SH = SH .* SH_sum_xy ./ SH_filtered_avg_xy;
 % compute spectral moment images
 moment_1_image = moment1(SH, f1, f2, fs, batch_size, gw); 
 moment_0_image = moment0(SH, f1, f2, fs, batch_size, gw);
-1;
+
 % compute average frequency image from hyperspectral image
 frequency_image = moment_1_image * 1e3; %kHz
 frequency_image = frequency_image ./ imgaussfilt(moment_0_image, 64);

@@ -67,17 +67,17 @@ if img_type_list.power_2_Doppler.select % Power 2 Doppler has been chosen
 end
 
 if img_type_list.color_Doppler.select  % Color Doppler has been chosen
-    [M0_neg, M0_pos] = composite(SH2, color_f1, color_f2, color_f3, ac.fs, j_win, gaussian_width);
-    img_type_list.color_Doppler.M0_pos = M0_pos;
-    img_type_list.color_Doppler.M0_neg = M0_neg;
-    img_type_list.color_Doppler.image = construct_colored_image(sign * gather(M0_neg), sign * gather(M0_pos), is_low_frequency);
+    [M0_pos, M0_neg] = directional(SH2, f1, f2, ac.fs, j_win, gaussian_width);
+    img_type_list.directional_Doppler.M0_pos = M0_pos;
+    img_type_list.directional_Doppler.M0_neg = M0_neg;
+    img_type_list.directional_Doppler.image = construct_directional_image(sign * gather(M0_neg), sign * gather(M0_pos), is_low_frequency);
 end
 
-if img_type_list.directional_Doppler.select % Directional Doppler has been chosen
-    [freq_high, freq_low] = directional(SH2, f1, f2, ac.fs, j_win, gaussian_width);
-    img_type_list.directional_Doppler.freq_low = freq_low;
-    img_type_list.directional_Doppler.freq_high = freq_high;
-    img_type_list.directional_Doppler.image = construct_directional_image(sign * gather(freq_high), sign *gather(freq_low), is_low_frequency);
+if img_type_list.color_Doppler.select % Directional Doppler has been chosen
+    [freq_low, freq_high] = composite(SH2, color_f1, color_f2, color_f3, ac.fs, j_win, gaussian_width);
+    img_type_list.color_Doppler.freq_low = freq_low;
+    img_type_list.color_Doppler.freq_high = freq_high;
+    img_type_list.color_Doppler.image = construct_colored_image(sign * gather(freq_high), sign *gather(freq_low), is_low_frequency);
 end
 
 if img_type_list.M0sM1r.select % M1sM0r has been chosen

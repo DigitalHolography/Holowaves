@@ -10,8 +10,8 @@ function images = imageStructure()
 field_1 = 'power_Doppler'; values_1 = struct('short_name','power', 'select', 0 ,'image', [] , 'M0_sqrt', []);
 field_2 = 'power_1_Doppler'; values_2 = struct('short_name','power1', 'select', 0 ,'image', []);
 field_3 = 'power_2_Doppler'; values_3 = struct('short_name','power2', 'select', 0 ,'image', []);
-field_4 = 'color_Doppler'; values_4 = struct('short_name','color', 'select', 0 ,'image', [] , 'M0_pos', [], 'M0_neg', []);
-field_5 = 'directional_Doppler'; values_5 = struct('short_name','directional', 'select', 0 ,'image', [] , 'freq_low', [], 'freq_high', []);
+field_4 = 'directional_Doppler'; values_4 = struct('short_name','directional', 'select', 0 ,'image', [] , 'M0_pos', [], 'M0_neg', []);
+field_5 = 'color_Doppler'; values_5 = struct('short_name','color', 'select', 0 ,'image', [] , 'freq_low', [], 'freq_high', []);
 field_6 = 'M0sM1r'; values_6 = struct('short_name','ratio', 'select', 0 ,'image', [] );
 field_7 = 'velocity_estimate'; values_7 = struct('short_name','velocity', 'select', 0 ,'image', []);
 
