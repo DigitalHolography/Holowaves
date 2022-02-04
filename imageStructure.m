@@ -7,7 +7,7 @@ function images = imageStructure()
 % field that can store reconstructed image
 
 
-field_1 = 'power_Doppler'; values_1 = struct('short_name','power', 'select', 0 ,'image', [] , 'M0_sqrt', []);
+field_1 = 'power_Doppler'; values_1 = struct('short_name','power', 'select', 0 ,'image', [] , 'M0_sqrt', [], 'audio_spectrum', []);
 field_2 = 'power_1_Doppler'; values_2 = struct('short_name','power1', 'select', 0 ,'image', []);
 field_3 = 'power_2_Doppler'; values_3 = struct('short_name','power2', 'select', 0 ,'image', []);
 field_4 = 'color_Doppler'; values_4 = struct('short_name','color', 'select', 0 ,'image', [] , 'M0_pos', [], 'M0_neg', []);

@@ -35,7 +35,7 @@ end
 
 %% squared magnitude of hologram
 SH = fft(H, [], 3);
-SH2 = abs(SH).^2;
+SH2 = abs(SH).^2; 
 
 %% shifts related to acquisition wrong positioning
 SH2 = permute(SH2, [2 1 3]);
@@ -54,6 +54,9 @@ if img_type_list.power_Doppler.select % Power Doppler has been chosen
     [img, sqrt_img] = (moment0(SH2, f1, f2, ac.fs, j_win, gaussian_width));
     img_type_list.power_Doppler.M0_sqrt = sqrt_img;
     img_type_list.power_Doppler.image = img;
+    audio_spectrum = squeeze(mean(SH2, [1, 2]));
+%     plot(fftshift(log(audio_spectrum)));
+    img_type_list.power_Doppler.audio_spectrum = audio_spectrum;
 end
 
 if img_type_list.power_1_Doppler.select % Power 1 Doppler has been chosen
@@ -88,5 +91,6 @@ end
 if img_type_list.velocity_estimate.select % Velocity Estimate has been chosen
    img_type_list.velocity_estimate.image = construct_velocity_video(SH2, f1, f2, ac.fs, j_win, gaussian_width, wavelength);
 end
+
 
 end
