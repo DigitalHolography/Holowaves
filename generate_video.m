@@ -1,4 +1,4 @@
-function generate_video(video, audio, output_path, name, contrast_enhancement_tol, temporal_filter_sigma, contrast_inversion, export_raw, export_avg_img)
+function generate_video(video, audio, output_path, name, contrast_enhancement_tol, temporal_filter_sigma, contrast_inversion, export_raw, export_avg_img, batch_stride, Fs)
 % Saves a raw pixel array to a video file, with some post processing
 % commonly done for rendering hologram videos
 %
@@ -44,10 +44,19 @@ video = mat2gray(video);
 [~, output_dirname] = fileparts(output_path);
 output_filename = sprintf('%s_%s.%s', output_dirname, name, 'avi');
 w = VideoWriter(sprintf('%s\\avi\\%s', output_path, output_filename));
-audio = normalize(log(abs(fft(audio, 1024, 2))), 'range', [-1, 1]);
-audio = reshape(audio, 1, size(audio, 1) * size(audio, 2));
+
+% create audio track
+% audio = normalize(log(abs(fft(audio, 1024, 2))), 'range', [-1, 1]);
+tsize = floor(batch_stride * 44100 / Fs);
+audio_source = zeros(size(audio,1),tsize);
+for pp = 1:size(audio,1)% == size(video,3)
+    audio_source(pp,:) = real(fft(audio(pp,:),tsize,2));
+end%pp
+audio_source = reshape(audio_source,1,size(audio,1)*tsize);
+audio_source = normalize(audio_source,2,'range', [-1, 1]);
 output_filename_audio = sprintf("%s\\plop.mp4", output_path);
-audiowrite(output_filename_audio, audio, 44100);
+audiowrite(output_filename_audio, audio_source, 44100);
+
 open(w);
 for i = 1:size(video,4)
  writeVideo(w, video(:,:,:,i));
