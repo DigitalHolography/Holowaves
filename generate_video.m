@@ -27,7 +27,7 @@ if export_raw
     w = VideoWriter(fullfile(output_path, 'raw', output_filename));
     open(w);
     for i = 1:size(video, 4)
-        writeVideo(w, video(:,:,:,i));
+        writeVideo(w, mat2gray(video(:,:,:,i)));
     end
     close(w);
 end

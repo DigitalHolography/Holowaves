@@ -118,8 +118,8 @@ if img_type_list.phase_variation.select
 end
 
 if img_type_list.power_Doppler.select % Power Doppler has been chosen
-    [img, sqrt_img] = moment0(SH, f1, f2, ac.fs, j_win, gaussian_width);
-    img_type_list.power_Doppler.M0_sqrt = sqrt_img;
+    [img, raw_M0] = moment0(SH, f1, f2, ac.fs, j_win, gaussian_width);
+    img_type_list.power_Doppler.raw_M0 = raw_M0;
     img_type_list.power_Doppler.image = img;
 
     %save image for study

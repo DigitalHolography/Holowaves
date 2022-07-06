@@ -2,7 +2,7 @@ function images = clearImages(images)
 
 %does it have to return anything? can it just clear struct?
 
-images.power_Doppler.select = 0; images.power_Doppler.image = []; images.power_Doppler.M0_sqrt = [];
+images.power_Doppler.select = 0; images.power_Doppler.image = []; images.power_Doppler.raw_M0 = [];
 images.power_1_Doppler.select = 0; images.power_1_Doppler.image = [];
 images.power_2_Doppler.select = 0; images.power_2_Doppler.image = [];
 images.color_Doppler.select = 0; images.color_Doppler.image = []; images.color_Doppler.freq_low = []; images.color_Doppler.freq_high = [];

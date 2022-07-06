@@ -1,8 +1,8 @@
 function map_RI = construct_resistivity_index(M0,filepath,RI_output_filename)
     %https://en.wikipedia.org/wiki/Arterial_resistivity_index
-    disp(size(M0));
-    disp(max(M0,[],'all')) ; 
-    disp(min(M0,[],'all')) ; 
+%     disp(size(M0));
+%     disp(max(M0,[],'all')) ; 
+%     disp(min(M0,[],'all')) ; 
 
     tmp = zeros(2*size(M0, 1)-1, 2*size(M0, 2)-1, size(M0,3), size(M0,4));
     for mm = 1:size(M0, 3)
@@ -18,7 +18,7 @@ function map_RI = construct_resistivity_index(M0,filepath,RI_output_filename)
     disp(size(M0));
     mask = squeeze(std(M0, 1, 4));
     mask = imbinarize(im2gray(mask), 'adaptive', 'ForegroundPolarity', 'bright', 'Sensitivity', 0.4);
-    disp(size(mask)) ; 
+%     disp(size(mask)) ; 
     arteries = squeeze(sum(M0.* mask, [1 2]))/sum(mask, "all");
 %     figure(1)
 %     imshow(mask) ; 
@@ -52,7 +52,7 @@ function map_RI = construct_resistivity_index(M0,filepath,RI_output_filename)
     cmap(:,end+1:end+n4) = [linspace(1, 1, n4) ; linspace(1, 1, n4) ; linspace(1, 1,n4) ];
 
     title_map = strcat('Arterial resistivity index : ', num2str(RI)) ; 
-    disp(size(Y)) ; 
+%     disp(size(Y)) ; 
     figure(3)
     imagesc(RI_mat) ;
     title(title_map,'FontSize',20) ; 
@@ -61,8 +61,7 @@ function map_RI = construct_resistivity_index(M0,filepath,RI_output_filename)
     axis off; 
     colorbar ; 
     
-    
-    full_name = strcat(fullfile(filepath,'png',RI_output_filename),'AV') ; 
+    full_name = (fullfile(filepath,'png',RI_output_filename)) ; 
     print('-f3','-dpng',full_name) ; 
 
     map_RI = RI_mat ; 
