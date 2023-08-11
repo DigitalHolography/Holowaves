@@ -177,7 +177,14 @@ if img_type_list.velocity_estimate.select % Velocity Estimate has been chosen
 end
 
 if img_type_list.spectrogram.select
-    img_type_list.spectrogram.SH = SH;
+%     bin_x = 2;
+%     bin_y = 2;
+%     bin_t = 1;
+%     bin_w = 16;
+    cubeTargetSize = 256;
+    cubeFreqLength = 32 ;
+    %img_type_list.spectrogram.SH = SH(1:bin_x:end,1:bin_y:end,1:bin_w:end);
+    img_type_list.spectrogram.SH = imresize3(SH,[cubeTargetSize cubeTargetSize cubeFreqLength],'Method','linear');
     img_type_list.spectrogram.vector = zeros(1,j_win);
     img_type_list.spectrogram.image = zeros(size(SH, 1), size(SH, 2));
     %     tmp = zeros(size(SH,1), size(SH,2), 1, size(SH,3),'single');
