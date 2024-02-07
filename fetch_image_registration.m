@@ -9,7 +9,7 @@ function [image_registration, found] = fetch_image_registration(filepath, filena
 
 if ~isempty(selected_dir)
     found = true;
-    image_registration = load(fullfile(filepath, selected_dir, sprintf('%s.mat', selected_dir)), 'image_registration');
+    image_registration = load(fullfile(filepath, selected_dir,'mat', sprintf('%s.mat', selected_dir)), 'image_registration');
     image_registration = image_registration.image_registration;
 else
     image_registration = [];

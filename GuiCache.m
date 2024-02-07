@@ -20,6 +20,7 @@ properties (Access = public)
     pix_width
     pix_height
     registration
+    iterative_registration
     temporal_filter_flag
     temporal_filter
     parallelism
