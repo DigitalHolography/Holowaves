@@ -8,11 +8,13 @@ classdef FolderManagementUI < handle
 %   Each file in the list has exactly one associated configuration.
 
 properties (Access = private)
-    MainApp % Reference to the main HoloDoppler app
-    Figure % uifigure handle
-    TextArea % uitextarea displaying the file list
-    KeepZCheckbox % uicheckbox for 'Keep z distance' option
-    drawerList % Local reference to the drawer list for easy access
+    MainApp          % Reference to the main HoloDoppler app
+    Figure           % uifigure handle
+    TextArea         % uitextarea displaying the file list
+    KeepZCheckbox    % uicheckbox for 'Keep z distance' option
+    drawerList       % Local reference to the drawer list for easy access
+    MaxWidth         % Maximum allowed width (pixels)
+    MaxHeight        % Maximum allowed height (pixels)
 end
 
 methods
@@ -40,27 +42,53 @@ methods (Access = private)
 
         mainApp = obj.MainApp;
 
+        % Get main figure and screen sizes
         if isvalid(mainApp) && ismethod(mainApp, 'getMainFigure')
             mainFig = mainApp.getMainFigure();
-
             if isvalid(mainFig)
                 mainPos = mainFig.Position;
-                xPos = mainPos(1) + mainPos(3) + 20;
-                yPos = mainPos(2);
             else
-                xPos = 300; yPos = 300;
+                mainPos = [100, 100, 800, 600];  % fallback
             end
-
         else
-            xPos = 300; yPos = 300;
+            mainPos = [100, 100, 800, 600];
         end
 
-        obj.Figure = uifigure('Position', [xPos, yPos, 700, initialHeight], ...
+        screenSize = get(groot, 'ScreenSize');  % [left, bottom, width, height]
+
+        % Position the window to the right of the main figure
+        xPos = mainPos(1) + mainPos(3) + 20;
+        yPos = mainPos(2);
+
+        % Compute maximum width/height based on main window and screen
+        availableWidth  = screenSize(3) - xPos;
+        availableHeight = screenSize(4) - yPos;
+
+        maxWidth = min(mainPos(3), availableWidth);
+        maxHeight = min(mainPos(4), availableHeight);
+
+        % Ensure a reasonable minimum
+        maxWidth = max(maxWidth, 200);
+        maxHeight = max(maxHeight, 200);
+
+        obj.MaxWidth = maxWidth;
+        obj.MaxHeight = maxHeight;
+
+        % Set initial size, respecting limits
+        initialWidth = min(700, maxWidth);
+        initialHeight = min(initialHeight, maxHeight);
+        initialHeight = max(initialHeight, 200);
+
+        % Create figure
+        obj.Figure = uifigure('Position', [xPos, yPos, initialWidth, initialHeight], ...
             'Color', [0.2, 0.2, 0.2], ...
             'Name', 'Folder management', ...
             'Resize', 'on', ...
             'WindowStyle', 'normal', ...
-            'CloseRequestFcn', @(~, ~) obj.closeFigure());
+            'CloseRequestFcn', @(~, ~) obj.closeFigure(), ...
+            'AutoResizeChildren', 'off');
+
+        obj.Figure.SizeChangedFcn = @(~, ~) obj.clampFigureSize();
 
         drawnow;
 
@@ -152,7 +180,7 @@ methods (Access = private)
     end
 
     function updateDisplay(obj)
-        % Refresh the text area and adjust window height.
+        % Refresh the text area and adjust window height, respecting limits.
 
         if isempty(obj.drawerList)
             displayValue = {''};
@@ -163,8 +191,38 @@ methods (Access = private)
         obj.TextArea.Value = displayValue;
 
         newHeight = 188 + length(obj.drawerList) * 18;
-        obj.Figure.Position(4) = max(newHeight, 206);
+        newHeight = max(newHeight, 206);
+        newHeight = min(newHeight, obj.MaxHeight);
 
+        % Ensure width also stays within limit
+        currentWidth = obj.Figure.Position(3);
+        if currentWidth > obj.MaxWidth
+            currentWidth = obj.MaxWidth;
+        end
+
+        obj.Figure.Position = [obj.Figure.Position(1), obj.Figure.Position(2), ...
+                               currentWidth, newHeight];
+    end
+
+    function clampFigureSize(obj)
+        % Enforce maximum width/height when the user resizes the figure.
+        % Guard against invalid figure (e.g., during creation/deletion)
+        if ~isvalid(obj.Figure)
+            return;
+        end
+        pos = obj.Figure.Position;
+        changed = false;
+        if pos(3) > obj.MaxWidth
+            pos(3) = obj.MaxWidth;
+            changed = true;
+        end
+        if pos(4) > obj.MaxHeight
+            pos(4) = obj.MaxHeight;
+            changed = true;
+        end
+        if changed
+            obj.Figure.Position = pos;
+        end
     end
 
     function closeFigure(obj)
